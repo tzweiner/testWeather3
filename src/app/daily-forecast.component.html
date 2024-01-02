@@ -1,0 +1,36 @@
+<h4>Daily forecast per zip code</h4>
+<div class="container-fluid" *ngIf="$data | async as data else nodata">
+
+  <div class="well">
+    <mat-label>Enter a zipcode:</mat-label>
+    <input matInput class="form-control" placeholder="Zipcode" type="text" id="addLocation" [formControl]="zipcodeInput">
+    <br>
+    <button class="btn btn-primary" id="addLocationBtn" (click)="enterZipcode()">
+      Add location
+    </button>
+  </div>
+  <div class="well" *ngIf="showDetail">
+    <div class="well flex">
+      <div>
+        <h3>{{data.name}} ({{currentZipcode}})</h3>
+        <h4>Current conditions: {{data.weather[0].main}}</h4>
+        <h4>Temperatures today:</h4>
+        <p>
+          Current {{data.main.temp | number: '1.0-0' }}<br />
+          - Max {{data.main.temp_max | number: '1.0-0' }}<br />
+          - Min {{data.main.temp_min | number: '1.0-0'}}
+        </p>
+        <p>
+          <a routerLink='{{"/forecast/" + currentZipcode}}' routerLinkActive="active">Show 5-day forecast for {{data.name}}</a>
+        </p>
+      </div>
+      <div>
+        <span class="close" (click)="closeDetail()">×</span>
+        <img [src]="getForecastIcon(data.weather[0].icon)">
+      </div>
+    </div>
+  </div>
+</div>
+<ng-template #nodata>
+  No data to show
+</ng-template>

@@ -1,0 +1,19 @@
+<h4>Template for 5-day forecast page:</h4>
+<div class="container-fluid" *ngIf="$data | async as data">
+  <div class="panel panel-default">
+    <div class="panel-heading">
+      <h3 class="panel-title">5-day forecast for {{data.city.name}}</h3>
+    </div>
+    <ul class="list-group">
+      <li class="list-group-item" *ngFor="let day of data.list">
+        {{showDate(day.dt)}}:
+        {{day.weather[0].main}}
+      - Min: {{day.temp.min | number: '1.0-0' }}
+      - Max: {{day.temp.max | number: '1.0-0'}}
+
+        <img class="icon" [src]="getForecastIcon(day.weather[0].icon)">
+    </li>
+    </ul>
+  </div>
+  <button routerLink="/" routerLinkActive="active" class="btn btn-success" tabindex="0" id="mainPageBtn">&lt; Back to main page</button>
+</div>
