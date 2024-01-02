@@ -1,21 +1,11 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {ForecastService} from "./forecast.service";
 import {FormControl} from "@angular/forms";
 import {
-  BehaviorSubject,
-  catchError,
-  combineLatest,
-  EMPTY,
   map,
-  Observable,
-  of,
-  startWith,
-  Subject,
-  switchMap,
-  tap, throwError
+  Observable, Subscription,
 } from "rxjs";
 import {Forecast} from "./forecast.model";
-import {T} from "@angular/cdk/keycodes";
 
 @Component({
   selector: 'app-daily-forecast',
@@ -25,45 +15,33 @@ import {T} from "@angular/cdk/keycodes";
 export class DailyForecastComponent implements OnInit {
   private init = true;
   private zipcodeList: number[] = new Array();
-  private readonly subject = new Subject<number>();
 
   public currentZipcode: number = 95742;
   public showDetail = true;
   public zipcodeInput: FormControl = new FormControl();
-  public $data: Observable<Forecast> = new Observable<Forecast>();
+  public $data: Observable<Forecast> | undefined = undefined;
+  private subscriptions = new Subscription();
 
   constructor(private forecastService: ForecastService) {
-    this.$data = this.subject.asObservable().pipe(
-      startWith(95742),
-      tap((zipcode: number) => this.currentZipcode = zipcode),
-      switchMap(() => this.forecastService.getDailyByZip(this.currentZipcode)
-        .pipe(
-          map((x:Forecast) => {
-            if (!this.hasZipCode(this.currentZipcode)) {
-              this.zipcodeList.push(this.currentZipcode);
-              this.updateLocalStorage(this.zipcodeList);
-              if (!this.init) {
-                this.displayFeedback(`Zip code ${this.currentZipcode} entered`);
-              }
-            }
-            if (this.init) {
-              this.init = false;
-            }
-            this.showDetail = true;
-            return x;
-          })
-        )),
-      catchError((error) => {
-        console.log(error);
-        return EMPTY;
-      })
-    );
   }
 
-  ngOnInit(): void { }
-
-  ngOnDestroy(){
-    this.subject.complete();
+  ngOnInit(): void {
+    this.$data = this.forecastService.getDailyByZip(this.currentZipcode).pipe(
+      map((data: Forecast) => {
+        if (!this.hasZipCode(this.currentZipcode)) {
+          this.zipcodeList.push(this.currentZipcode);
+          this.updateLocalStorage(this.zipcodeList);
+          if (!this.init) {
+            this.displayFeedback(`Zip code ${this.currentZipcode} entered`);
+          }
+        }
+        if (this.init) {
+          this.init = false;
+        }
+        this.showDetail = true;
+        return data;
+      })
+    )
   }
 
   public closeDetail(): void {
@@ -90,7 +68,10 @@ export class DailyForecastComponent implements OnInit {
     if (!this.zipcodeInput?.value) {
       this.displayFeedback("Nothing was entered");
     } else {
-      this.subject.next(parseInt(this.zipcodeInput.value));
+      if (parseInt(this.zipcodeInput?.value)) {
+        this.currentZipcode = this.zipcodeInput.value;
+        this.$data = this.forecastService.getDailyByZip(this.currentZipcode);
+      }
     }
   }
 }
