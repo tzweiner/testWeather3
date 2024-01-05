@@ -16,13 +16,13 @@ export class DailyForecastComponent implements OnInit {
   private init = true;
   private zipcodeList: number[] = new Array();
 
-  public currentZipcode: number = 95742;
+  public currentZipcode: number = ForecastService.defaultZipcode;
   public showDetail = true;
   public zipcodeInput: FormControl = new FormControl();
   public $data: Observable<Forecast> | undefined = undefined;
   public numberOfDaysFormControl: FormControl = new FormControl<number>(5);
   public numberOfDays: number[] = [5, 6, 7, 8, 9, 10];
-  private subscriptions = new Subscription();
+  public loading = true;
 
   constructor(private forecastService: ForecastService) {
   }
@@ -41,6 +41,7 @@ export class DailyForecastComponent implements OnInit {
           this.init = false;
         }
         this.showDetail = true;
+        this.loading = false;
         return data;
       })
     )
@@ -71,9 +72,16 @@ export class DailyForecastComponent implements OnInit {
       this.displayFeedback("Nothing was entered");
     } else {
       if (parseInt(this.zipcodeInput?.value)) {
+        this.loading = true;
         this.currentZipcode = this.zipcodeInput.value;
         this.$data = this.forecastService.getDailyByZip(this.currentZipcode);
       }
     }
+  }
+
+  public resetDaily(): void {
+    this.currentZipcode = ForecastService.defaultZipcode;
+    this.ngOnInit();
+    this.zipcodeInput.setValue(null);
   }
 }

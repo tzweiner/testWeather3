@@ -38,6 +38,7 @@ export class ForecastService {
   constructor(private $http: HttpClient) { }
 
   public static defaultCountDays = 5;
+  public static defaultZipcode = 95742;
 
   public getDailyByZip(zipcode: number): Observable<Forecast> {
     const url = this.WEATHER_DAILY_URL + zipcode;
