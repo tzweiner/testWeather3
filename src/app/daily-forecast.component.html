@@ -1,4 +1,5 @@
 <h4>Daily forecast per zip code</h4>
+<ng-template *ngIf="loading">Loading...</ng-template>
 <div class="container-fluid" *ngIf="$data | async as data else nodata">
 
   <div class="well">
@@ -42,6 +43,6 @@
     </div>
   </div>
 </div>
-<ng-template #nodata>
-  No data to show.  <button routerLink="/" routerLinkActive="active" class="btn btn-success" tabindex="0" id="mainPageBtn">&lt; Back to main page</button>
+<ng-template [ng-if]="!loading" #nodata>
+  No data to show.  <button class="btn btn-success" tabindex="0" id="mainPageBtn" (click)="resetDaily()">&lt; Back to main page</button>
 </ng-template>
