@@ -13,13 +13,16 @@ import moment from "moment";
 export class RangeForecastComponent implements OnInit {
 
   public $data: Observable<ForecastRange> = new Observable<ForecastRange>();
+  public count: number = ForecastService.defaultCountDays;
 
   constructor(private forecastService: ForecastService, private activatedRoute: ActivatedRoute) {
+    this.count = this.activatedRoute?.snapshot?.paramMap?.get("count") ?
+  parseInt(<string>this.activatedRoute?.snapshot?.paramMap?.get("count")) : ForecastService.defaultCountDays;
   }
 
   ngOnInit(): void {
     this.activatedRoute.data.subscribe((data: any) => {
-      this.$data = this.forecastService.getRangeForecast((data.forecast));
+      this.$data = this.forecastService.getRangeForecast(data.forecast, this.count);
     })
   }
 

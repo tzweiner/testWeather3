@@ -20,6 +20,8 @@ export class DailyForecastComponent implements OnInit {
   public showDetail = true;
   public zipcodeInput: FormControl = new FormControl();
   public $data: Observable<Forecast> | undefined = undefined;
+  public numberOfDaysFormControl: FormControl = new FormControl<number>(5);
+  public numberOfDays: number[] = [5, 6, 7, 8, 9, 10];
   private subscriptions = new Subscription();
 
   constructor(private forecastService: ForecastService) {
