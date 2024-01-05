@@ -33,9 +33,11 @@ export class ForecastService {
 
   private WEATHER_ICON_URL = 'https://www.angulartraining.com/images/weather/';
   private WEATHER_DAILY_URL = 'https://api.openweathermap.org/data/2.5/weather?appid=5a4b2d457ecbef9eb2a71e480b947604&units=imperial&zip=';
-  private WEATHER_RANGE_URL = 'https://api.openweathermap.org/data/2.5/forecast/daily?appid=5a4b2d457ecbef9eb2a71e480b947604&units=imperial&cnt=5'
+  private WEATHER_RANGE_URL = 'https://api.openweathermap.org/data/2.5/forecast/daily?appid=5a4b2d457ecbef9eb2a71e480b947604&units=imperial'
 
   constructor(private $http: HttpClient) { }
+
+  public static defaultCountDays = 5;
 
   public getDailyByZip(zipcode: number): Observable<Forecast> {
     const url = this.WEATHER_DAILY_URL + zipcode;
@@ -46,8 +48,8 @@ export class ForecastService {
     return this.WEATHER_ICON_URL + this.iconMap.get(iconName);
   }
 
-  public getRangeForecast(forecast: Forecast): Observable<ForecastRange> {
-    const url = this.WEATHER_RANGE_URL + `&lat=${forecast.coord.lat}&lon=${forecast.coord.lon}`;
+  public getRangeForecast(forecast: Forecast, count: number): Observable<ForecastRange> {
+    const url = this.WEATHER_RANGE_URL + `&lat=${forecast.coord.lat}&lon=${forecast.coord.lon}&cnt=${count}`;
     return this.$http.get<ForecastRange>(url);
   }
 }

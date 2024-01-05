@@ -20,8 +20,19 @@
           - Max {{data.main.temp_max | number: '1.0-0' }}<br />
           - Min {{data.main.temp_min | number: '1.0-0'}}
         </p>
+
+        <div>
+          <label>Select number of days</label>&nbsp;
+          <select [formControl]="numberOfDaysFormControl">
+            <option *ngFor="let opt of numberOfDays"
+                    [value]="opt">
+              {{opt}}
+            </option>
+          </select>
+        </div>
+
         <p>
-          <a routerLink='{{"/forecast/" + currentZipcode}}' routerLinkActive="active">Show 5-day forecast for {{data.name}}</a>
+          <a routerLink='{{"/forecast/" + currentZipcode + "/count/" + numberOfDaysFormControl.value}}' routerLinkActive="active">Show {{numberOfDaysFormControl.value}}-day forecast for {{data.name}}</a>
         </p>
       </div>
       <div>
@@ -32,5 +43,5 @@
   </div>
 </div>
 <ng-template #nodata>
-  No data to show
+  No data to show.  <button routerLink="/" routerLinkActive="active" class="btn btn-success" tabindex="0" id="mainPageBtn">&lt; Back to main page</button>
 </ng-template>

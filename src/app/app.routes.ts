@@ -6,7 +6,7 @@ import {forecastResolver} from "./forecast.service";
 
 export const routes: Routes = [
   { path: 'forecast', component: DailyForecastComponent},
-  { path: 'forecast/:zip', component: RangeForecastComponent, resolve: { forecast: forecastResolver }},
+  { path: 'forecast/:zip/count/:count', component: RangeForecastComponent, resolve: { forecast: forecastResolver }},
   { path: '**', redirectTo: 'forecast'}
 ];
 

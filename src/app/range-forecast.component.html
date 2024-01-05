@@ -1,8 +1,8 @@
-<h4>Template for 5-day forecast page:</h4>
+<h4>Template for {{count}}-day forecast page:</h4>
 <div class="container-fluid" *ngIf="$data | async as data">
   <div class="panel panel-default">
     <div class="panel-heading">
-      <h3 class="panel-title">5-day forecast for {{data.city.name}}</h3>
+      <h3 class="panel-title">{{count}}-day forecast for {{data.city.name}}</h3>
     </div>
     <ul class="list-group">
       <li class="list-group-item" *ngFor="let day of data.list">
